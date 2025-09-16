@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Gestor de Turnos - Hospital</title>
+</head>
+<body>
+    <h1>Hospital - Gestor de Turnos</h1>
+    <nav>
+        <a href="{% url 'lista_turnos' %}">Ver turnos</a> |
+        <a href="{% url 'registrar_paciente' %}">Registrar paciente</a> |
+        <a href="{% url 'atender_paciente' %}">Atender paciente</a>
+    </nav>
+    <hr>
+    {% block content %}{% endblock %}
+</body>
+</html>

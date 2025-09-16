@@ -1,0 +1,17 @@
+{% extends "pacientes/base.html" %}
+
+{% block content %}
+<h2>Turnos en espera</h2>
+<table border="1">
+    <tr><th>ID</th><th>Nombre</th><th>Prioridad</th></tr>
+    {% for id, nombre, prioridad in pacientes %}
+    <tr>
+        <td>{{ id }}</td>
+        <td>{{ nombre }}</td>
+        <td>{{ prioridad }}</td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="3">No hay pacientes en la fila</td></tr>
+    {% endfor %}
+</table>
+{% endblock %}
