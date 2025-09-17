@@ -3,15 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <title>Gestor de Turnos - Hospital</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
-<body>
-    <h1>Hospital - Gestor de Turnos</h1>
-    <nav>
-        <a href="{% url 'lista_turnos' %}">Ver turnos</a> |
-        <a href="{% url 'registrar_paciente' %}">Registrar paciente</a> |
-        <a href="{% url 'atender_paciente' %}">Atender paciente</a>
-    </nav>
-    <hr>
-    {% block content %}{% endblock %}
+<body class="bg-light">
+
+    <div class="container mt-4">
+        <h1 class="mb-4 text-center">Hospital - Gestor de Turnos</h1>
+
+        <nav class="mb-3">
+            <a class="btn btn-primary" href="{% url 'lista_turnos' %}">Ver turnos</a>
+            <a class="btn btn-success" href="{% url 'registrar_paciente' %}">Registrar paciente</a>
+            <a class="btn btn-warning" href="{% url 'pasar_turno' %}">➡️ Pasar al siguiente</a>
+        </nav>
+
+        <hr>
+
+        {% block content %}{% endblock %}
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
