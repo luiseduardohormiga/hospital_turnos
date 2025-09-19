@@ -1,19 +1,20 @@
 from django.shortcuts import render, redirect
-from .logic.lista_doble import ListaTurnos
+from .logic.lista_doble import ListaDobleTurnos
 from .forms import PacienteForm
-from .models import Paciente, Turno
+from .models import Turno
+from django.contrib import messages
 
-turnos = ListaTurnos()
+# Instancia global de la lista doble
+turnos = ListaDobleTurnos()
 
 def lista_turnos(request):
-    turnos = Turno.objects.select_related("paciente").all()
-    # Ordenar primero por prioridad (menor valor primero), luego por número de turno
-    turnos = sorted(turnos, key=lambda t: (t.paciente.prioridad_valor(), t.numero_turno))
+    # Obtener turnos desde la lista doble, no desde sorted()
+    lista = turnos.recorrer()
     en_atencion = Turno.objects.filter(estado="en_atencion").first()
     return render(request, "pacientes/lista.html", {
-        "turnos": turnos,
+        "turnos": lista,
         "en_atencion": en_atencion,
-        })
+    })
 
 def registrar_paciente(request):
     if request.method == "POST":
@@ -27,13 +28,19 @@ def registrar_paciente(request):
             nuevo_numero = ultimo_turno.numero_turno + 1 if ultimo_turno else 1
 
             # Crear el turno
-            Turno.objects.create(
+            turno = Turno.objects.create(
                 paciente=paciente,
                 numero_turno=nuevo_numero,
                 estado="pendiente"
             )
 
-            return redirect("lista_turnos")
+            # Agregar el turno a la lista doble
+            turnos.agregar(turno)
+            
+            messages.success(request, f"Paciente {paciente.nombre} registrado con turno {turno.numero_turno}")
+
+            # Te quedas en la misma página, pero con form limpio
+            return redirect("registrar_paciente")
     else:
         form = PacienteForm()
 
@@ -46,17 +53,13 @@ def pasar_turno(request):
         en_atencion.estado = "atendido"
         en_atencion.save()
 
-    # Seleccionar el siguiente pendiente (ordenado por prioridad y número)
-    pendientes = Turno.objects.filter(estado="pendiente").all()
-    pendientes = sorted(pendientes, key=lambda t: (t.paciente.prioridad_valor(), t.numero_turno))
-
-    if pendientes:
-        siguiente = pendientes[0]
+    # Sacar el siguiente de la lista doble
+    siguiente = turnos.atender()
+    if siguiente:
         siguiente.estado = "en_atencion"
         siguiente.save()
 
     return redirect("lista_turnos")
 
 def atender_paciente(request, paciente_id):
-    turnos.pasar_a_atendido(paciente_id)  # necesitas que tu lógica acepte ID
     return redirect("lista_turnos")

@@ -1,82 +1,64 @@
+# pacientes/logic/lista_doble.py
 class NodoTurno:
-    def __init__(self, id_paciente, nombre, prioridad):
-        self.id = id_paciente
-        self.nombre = nombre
-        self.prioridad = prioridad  # "normal", "urgencia", "adulto_mayor", "embarazo"
-        self.estado = "espera"      # "espera", "atendiendo", "atendido"
-        self.prev = None
-        self.next = None
+    def __init__(self, turno):
+        self.turno = turno
+        self.siguiente = None
+        self.anterior = None
 
-
-class ListaTurnos:
+class ListaDobleTurnos:
     def __init__(self):
-        self.head = None
-        self.tail = None
-        self.contador_turnos = 1
-        self.turno_actual = None  # referencia al paciente atendiendo
+        self.cabeza = None
+        self.cola = None
 
-    def asignar_turno(self, nombre, prioridad="normal"):
-        id_paciente = self.contador_turnos
-        self.contador_turnos += 1
-        nuevo = NodoTurno(id_paciente, nombre, prioridad)
+    def agregar(self, turno):
+        nuevo = NodoTurno(turno)
 
-        if not self.head:
-            self.head = self.tail = nuevo
-        else:
-            if prioridad == "normal":
-                self.tail.next = nuevo
-                nuevo.prev = self.tail
-                self.tail = nuevo
-            else:
-                actual = self.head
-                while actual and actual.prioridad != "normal":
-                    actual = actual.next
-                if not actual:
-                    self.tail.next = nuevo
-                    nuevo.prev = self.tail
-                    self.tail = nuevo
-                elif actual == self.head:
-                    nuevo.next = self.head
-                    self.head.prev = nuevo
-                    self.head = nuevo
-                else:
-                    anterior = actual.prev
-                    anterior.next = nuevo
-                    nuevo.prev = anterior
-                    nuevo.next = actual
-                    actual.prev = nuevo
-        # si no hay nadie atendiendo, este pasa directo
-        if not self.turno_actual:
-            self.turno_actual = self.head
-            self.turno_actual.estado = "atendiendo"
-        return nuevo
+        # Si está vacía
+        if self.cabeza is None:
+            self.cabeza = self.cola = nuevo
+            return
 
-    def pasar_a_atendido(self):
-        """El admin marca el turno en atención como atendido y pasa al siguiente."""
-        if not self.turno_actual:
+        # Insertar ordenado por prioridad
+        actual = self.cabeza
+        while actual and self._valor_prioridad(actual.turno.paciente.prioridad) <= self._valor_prioridad(turno.paciente.prioridad):
+            actual = actual.siguiente
+
+        if actual is None:  # va al final
+            self.cola.siguiente = nuevo
+            nuevo.anterior = self.cola
+            self.cola = nuevo
+        elif actual == self.cabeza:  # va al inicio
+            nuevo.siguiente = self.cabeza
+            self.cabeza.anterior = nuevo
+            self.cabeza = nuevo
+        else:  # en medio
+            anterior = actual.anterior
+            anterior.siguiente = nuevo
+            nuevo.anterior = anterior
+            nuevo.siguiente = actual
+            actual.anterior = nuevo
+
+    def atender(self):
+        if self.cabeza is None:
             return None
-        # marcar el turno actual como atendido
-        self.turno_actual.estado = "atendido"
-        # mover al siguiente turno en espera
-        siguiente = self.turno_actual.next
-        while siguiente and siguiente.estado != "espera":
-            siguiente = siguiente.next
-        if siguiente:
-            siguiente.estado = "atendiendo"
-            self.turno_actual = siguiente
+
+        turno = self.cabeza.turno
+        self.cabeza = self.cabeza.siguiente
+        if self.cabeza:
+            self.cabeza.anterior = None
         else:
-            self.turno_actual = None
-        return True
+            self.cola = None
+        return turno
 
     def recorrer(self):
-        """Devuelve todos los turnos (espera, atendiendo, atendido)."""
-        actual = self.head
-        pacientes = []
+        actual = self.cabeza
+        lista = []
         while actual:
-            pacientes.append((actual.id, actual.nombre, actual.prioridad, actual.estado))
-            actual = actual.next
-        return pacientes
+            lista.append(actual.turno)
+            actual = actual.siguiente
+        return lista
 
-    def turno_en_atencion(self):
-        """Devuelve el paciente que está en turno."""
-        return self.turno_actual
+    def _valor_prioridad(self, prioridad):
+        # Define los valores de prioridad (ajústalos a tu modelo)
+        prioridades = {"urgencia": 1, "adulto_mayor": 2, "embarazo": 2, "normal": 3}
+        return prioridades.get(prioridad, 3)

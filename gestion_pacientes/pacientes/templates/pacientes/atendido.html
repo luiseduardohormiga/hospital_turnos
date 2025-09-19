@@ -1,10 +1,10 @@
 {% extends "pacientes/base.html" %}
 
 {% block content %}
-<h2>Paciente Atendido</h2>
-{% if paciente %}
-<p>Se atendió al paciente <strong>{{ paciente.nombre }}</strong> con turno #{{ paciente.id }}</p>
-{% else %}
-<p>No hay pacientes en espera.</p>
-{% endif %}
+    <h2>Paciente Atendido</h2>
+    {% if paciente %}
+        <p>Se atendió al paciente <strong>{{ paciente.nombre }}</strong> con turno #{{ paciente.id }}</p>
+    {% else %}
+        <p>No hay pacientes en espera.</p>
+    {% endif %}
 {% endblock %}

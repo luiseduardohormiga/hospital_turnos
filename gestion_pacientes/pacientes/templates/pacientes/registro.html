@@ -2,6 +2,14 @@
 
 {% block content %}
 <div class="card shadow">
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-success">
+            {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
     <div class="card-body">
         <h2 class="card-title mb-3">Registrar Paciente</h2>
         <form method="post" class="row g-3">
@@ -13,4 +21,14 @@
         </form>
     </div>
 </div>
+<script>
+    //cierra el mensaje automáticamente
+    setTimeout(() => {
+        let alert = document.querySelector(".alert");
+        if (alert) {
+        let bsAlert = new bootstrap.Alert(alert);
+        bsAlert.close();
+        }
+    }, 3000); 
+</script>
 {% endblock %}
