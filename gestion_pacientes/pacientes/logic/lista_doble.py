@@ -2,24 +2,25 @@
 class NodoTurno:
     def __init__(self, turno):
         self.turno = turno
-        self.siguiente = None
+        self.siguiente = None #nodo que guarda el turno, siguiente y el anterior
         self.anterior = None
 
 class ListaDobleTurnos:
     def __init__(self):
-        self.cabeza = None
+        self.cabeza = None #cabeza y cola de la lista
         self.cola = None
 
+#cuendo se registra un paciente se agrega a la lista doble
     def agregar(self, turno):
         nuevo = NodoTurno(turno)
 
-        # Si está vacía
+        # verificar Si está vacía
         if self.cabeza is None:
             self.cabeza = self.cola = nuevo
             return
 
         # Insertar ordenado por prioridad
-        actual = self.cabeza
+        actual = self.cabeza #se compara las prioridades
         while actual and self._valor_prioridad(actual.turno.paciente.prioridad) <= self._valor_prioridad(turno.paciente.prioridad):
             actual = actual.siguiente
 
@@ -38,12 +39,12 @@ class ListaDobleTurnos:
             nuevo.siguiente = actual
             actual.anterior = nuevo
 
-    def atender(self):
+    def atender(self): # se toma el primer turno de la lista
         if self.cabeza is None:
             return None
 
         turno = self.cabeza.turno
-        self.cabeza = self.cabeza.siguiente
+        self.cabeza = self.cabeza.siguiente  #avanza al siguiente
         if self.cabeza:
             self.cabeza.anterior = None
         else:
@@ -54,11 +55,16 @@ class ListaDobleTurnos:
         actual = self.cabeza
         lista = []
         while actual:
-            lista.append(actual.turno)
+            lista.append(actual.turno) # lista python
             actual = actual.siguiente
         return lista
 
-    def _valor_prioridad(self, prioridad):
-        # Define los valores de prioridad (ajústalos a tu modelo)
-        prioridades = {"urgencia": 1, "adulto_mayor": 2, "embarazo": 2, "normal": 3}
-        return prioridades.get(prioridad, 3)
+    def _valor_prioridad(self, prioridad): 
+        prioridades = {
+            "nivel_1": 1,  # Muy alta
+            "nivel_2": 2,  # Alta
+            "nivel_3": 3,  # Media  orden numerico
+            "nivel_4": 3,  # Baja
+            "nivel_5": 3,  # Muy baja
+        }
+        return prioridades.get(prioridad, 99)

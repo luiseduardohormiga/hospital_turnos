@@ -36,11 +36,14 @@
                     <td>{{ turno.numero_turno }}</td>
                     <td>{{ turno.paciente.nombre }}</td>
                     <td>
-                        <span class="badge 
-                            {% if turno.paciente.prioridad == 'urgencia' %} bg-danger
-                            {% elif turno.paciente.prioridad == 'embarazo' %} bg-warning text-dark
-                            {% elif turno.paciente.prioridad == 'adulto_mayor' %} bg-info text-dark
-                            {% else %} bg-secondary {% endif %}">
+                        <span class="badge
+                            {% if turno.paciente.prioridad == 'nivel_1' %} bg-danger
+                            {% elif turno.paciente.prioridad == 'nivel_2' %} bg-warning
+                            {% elif turno.paciente.prioridad == 'nivel_3' %} bg-warning text-dark
+                            {% elif turno.paciente.prioridad == 'nivel_4' %} bg-success
+                            {% elif turno.paciente.prioridad == 'nivel_5' %} bg-primary
+                            {% else %} bg-secondary
+                            {% endif %}">
                             {{ turno.paciente.get_prioridad_display }}
                         </span>
                     </td>
