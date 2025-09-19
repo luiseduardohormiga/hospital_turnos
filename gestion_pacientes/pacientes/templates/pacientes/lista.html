@@ -3,7 +3,9 @@
 
 {% if en_atencion %}
 <div class="alert alert-primary text-center" role="alert">
-    <h4 class="alert-heading">⏳ Paciente en Atención</h4>
+    <h4 class="alert-heading">
+        <i class="bi bi-hourglass-top"></i> 
+         Paciente en Atención</h4>
     <p><strong>Turno {{ en_atencion.numero_turno }}</strong> - {{ en_atencion.paciente.nombre }}</p>
     <hr>
     <p class="mb-0">Prioridad: 
@@ -61,10 +63,34 @@
     </div>
 </div>
 <script>
-    //recgarga la lista cada 3 segundos
-  setInterval(() => {
-    location.reload();
-  }, 3000); 
+     let ultimoTurno = null;  // Guardar quién estaba en atención antes
+
+     function refrescarTabla() {
+         fetch("{% url 'lista_turnos' %}?partial=1")  // endpoint que devuelve solo tabla+alerta
+             .then(response => response.text())
+             .then(html => {
+                 // Reemplazar el contenido del div
+                 document.querySelector(".container").innerHTML = html;
+
+                 // Verificar el nuevo paciente en atención
+                 const enAtencion = document.querySelector(".alert-primary strong");
+                 if (enAtencion) {
+                     const turnoActual = enAtencion.textContent.trim();
+
+                     // Si el turno en atención cambió → reproducir sonido
+                     if (ultimoTurno !== null && turnoActual !== ultimoTurno) {
+                         const sonido = document.getElementById("sonidoTurno");
+                         sonido.currentTime = 0;
+                         sonido.play().catch(err => console.log("Bloqueo navegador:", err));
+                     }
+                     ultimoTurno = turnoActual;
+                 }
+             })
+             .catch(error => console.error("Error refrescando tabla:", error));
+     }
+
+     // Refrescar cada 5 segundos
+     setInterval(refrescarTabla, 3000);
 </script>
 
 {% endblock %}

@@ -1,0 +1,39 @@
+        <table id="tabla_turnos" class="table table-striped table-hover">
+            <thead class="table-dark">
+                <tr>
+                    <th>Número</th>
+                    <th>Paciente</th>
+                    <th>Prioridad</th>
+                    <th>Estado</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for turno in turnos %}
+                <tr>
+                    <td>{{ turno.numero_turno }}</td>
+                    <td>{{ turno.paciente.nombre }}</td>
+                    <td>
+                        <span class="badge 
+                            {% if turno.paciente.prioridad == 'urgencia' %} bg-danger
+                            {% elif turno.paciente.prioridad == 'embarazo' %} bg-warning text-dark
+                            {% elif turno.paciente.prioridad == 'adulto_mayor' %} bg-info text-dark
+                            {% else %} bg-secondary {% endif %}">
+                            {{ turno.paciente.get_prioridad_display }}
+                        </span>
+                    </td>
+                    <td>
+                        <span class="badge 
+                            {% if turno.estado == 'en_atencion' %} bg-primary
+                            {% elif turno.estado == 'atendido' %} bg-success
+                            {% else %} bg-secondary {% endif %}">
+                            {{ turno.get_estado_display }}
+                        </span>
+                    </td>
+                </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="4" class="text-center">No hay turnos registrados.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
