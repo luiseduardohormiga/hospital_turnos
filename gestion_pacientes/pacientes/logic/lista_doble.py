@@ -5,60 +5,61 @@
 class NodoTurno:
     def __init__(self, turno):
         self.turno = turno
-        self.siguiente = None #nodo que guarda el turno, fechas siguiente y el anterior
+        self.siguiente = None # nodo que guarda info, fechas siguiente y el anterior
         self.anterior = None
 
 class ListaDobleTurnos:
     def __init__(self):
-        self.cabeza = None #cabeza y cola de la lista
+        self.cabeza = None
         self.cola = None
+        self.actual = None  # referencia al turno que se está atendiendo
 
-#cuendo se registra un paciente se agrega a la lista doble
     def agregar(self, turno):
         nuevo = NodoTurno(turno)
 
-        # verificar Si está vacía
         if self.cabeza is None:
             self.cabeza = self.cola = nuevo
             return
 
-        # Insertar ordenado por prioridad
-        actual = self.cabeza #se compara las prioridades
+        actual = self.cabeza
         while actual and self._valor_prioridad(actual.turno.paciente.prioridad) <= self._valor_prioridad(turno.paciente.prioridad):
             actual = actual.siguiente
 
-        if actual is None:  # va al final
+        if actual is None:  
             self.cola.siguiente = nuevo
             nuevo.anterior = self.cola
             self.cola = nuevo
-        elif actual == self.cabeza:  # va al inicio
+        elif actual == self.cabeza:  
             nuevo.siguiente = self.cabeza
             self.cabeza.anterior = nuevo
             self.cabeza = nuevo
-        else:  # en medio
+        else:  
             anterior = actual.anterior
             anterior.siguiente = nuevo
             nuevo.anterior = anterior
             nuevo.siguiente = actual
             actual.anterior = nuevo
 
-    def atender(self): # se toma el primer turno de la lista
-        if self.cabeza is None:
-            return None
-
-        turno = self.cabeza.turno
-        self.cabeza = self.cabeza.siguiente  #avanza al siguiente
-        if self.cabeza:
-            self.cabeza.anterior = None
+    def atender(self):
+        """Avanzar al siguiente turno"""
+        if self.actual is None:
+            self.actual = self.cabeza
         else:
-            self.cola = None
-        return turno
+            self.actual = self.actual.siguiente
+        return self.actual.turno if self.actual else None
+
+    def devolver(self):
+        """Regresar al turno anterior"""
+        if self.actual and self.actual.anterior:
+            self.actual = self.actual.anterior
+            return self.actual.turno
+        return None  # No hay turno anterior
 
     def recorrer(self):
         actual = self.cabeza
         lista = []
         while actual:
-            lista.append(actual.turno) # lista python
+            lista.append(actual.turno)
             actual = actual.siguiente
         return lista
 
@@ -66,8 +67,9 @@ class ListaDobleTurnos:
         prioridades = {
             "nivel_1": 1,  # Muy alta
             "nivel_2": 2,  # Alta
-            "nivel_3": 3,  # Media  orden numerico
-            "nivel_4": 3,  # Baja
-            "nivel_5": 3,  # Muy baja
+            "nivel_3": 3,  # Media
+            "nivel_4": 4,  # Baja
+            "nivel_5": 5,  # Muy baja
         }
         return prioridades.get(prioridad, 99)
+

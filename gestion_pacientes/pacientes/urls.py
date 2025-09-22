@@ -12,4 +12,5 @@ urlpatterns = [
     path("logout/", LogoutView.as_view(), name="logout"),
     path("espera/", views.lista_espera, name="lista_espera"),
     path("asignar/<int:paciente_id>/", views.asignar_prioridad, name="asignar_prioridad"),
+    path("devolver_turno/", views.devolver_turno, name="devolver_turno"),
 ]

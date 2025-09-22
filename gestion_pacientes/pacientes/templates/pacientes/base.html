@@ -14,6 +14,9 @@
         {% if request.resolver_match.url_name == "lista_turnos" %}
             <nav class="mb-3">
                 <div class="text-end">
+                    <a href="{% url 'devolver_turno' %}" class="btn btn-outline-secondary">
+                        <i class="bi bi-arrow-left-circle"></i> Devolver turno
+                    </a>
                     <a id="btnPasarTurno" class="btn btn-outline-warning">
                         <i class="bi bi-person-fill"></i> Pasar al siguiente
                     </a>

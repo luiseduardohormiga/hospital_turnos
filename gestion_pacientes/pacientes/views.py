@@ -89,3 +89,14 @@ def asignar_prioridad(request, paciente_id):
             return redirect("lista_espera")
 
     return redirect("lista_espera")
+
+def devolver_turno(request):
+    turno = turnos.devolver()  # usamos la instancia global, no la vista
+    if turno:
+        turno.estado = "en_atencion"
+        turno.save()
+        messages.success(request, f"Se ha devuelto al paciente {turno.paciente.nombre}.")
+    else:
+        messages.warning(request, "No hay turnos anteriores para devolver.")
+    return redirect("lista_turnos")
+
