@@ -10,7 +10,6 @@ PRIORIDADES = {
 
 class Paciente(models.Model):
     nombre = models.CharField(max_length=100)
-
     tipo_documento = models.CharField(
         max_length=20,
         choices=[
@@ -22,35 +21,29 @@ class Paciente(models.Model):
         ],
         default="CC"
     )
-
     numero_documento = models.CharField(max_length=20, unique=True)
-
     prioridad = models.CharField(
         max_length=20,
         choices=[
-            # ("normal", "Normal"),
-            # ("adulto_mayor", "Adulto Mayor"),
-            # ("embarazo", "Embarazo"),
-            # ("urgencia", "Urgencia"),
+            ("pendiente", "Pendiente"),
             ("nivel_1", "Nivel 1: Prioridad muy alta"),
             ("nivel_2", "Nivel 2: Prioridad alta"),
             ("nivel_3", "Nivel 3: Prioridad media"),
             ("nivel_4", "Nivel 4: Prioridad baja"),
             ("nivel_5", "Nivel 4: Prioridad muy baja"),
         ],
-        default="normal"
+        default="pendiente"
     )
-
     fecha_registro = models.DateTimeField(auto_now_add=True)
 
     def prioridad_valor(self):
         PRIORIDADES = {
-            "Nivel 1: Prioridad muy alta": 1,
-            "Nivel 2: Prioridad alta": 2,
-            "Nivel 3: Prioridad media": 3,
-            "Nivel 4: Prioridad baja": 4,
-            "Nivel 4: Prioridad muy baja": 5,
-        }
+        "nivel_1": 1,
+        "nivel_2": 2,
+        "nivel_3": 3,
+        "nivel_4": 4,
+        "nivel_5": 5,
+    }
         return PRIORIDADES.get(self.prioridad, 99)
 
     def __str__(self):

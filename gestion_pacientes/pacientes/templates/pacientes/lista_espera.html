@@ -1,0 +1,65 @@
+{% extends "pacientes/base.html" %}
+{% block content %}
+<div class="card shadow">
+  <div class="card-body">
+    <h2 class="card-title">Pacientes en espera</h2>
+
+    <table class="table table-bordered">
+      <thead>
+        <tr>
+          <th>Nombre</th>
+          <th>Fecha Registro</th>
+          <th>Asignar Prioridad</th>
+        </tr>
+      </thead>
+      <tbody id="tabla-espera-body">
+        {% for paciente in pacientes %}
+        <tr>
+          <td>{{ paciente.nombre }}</td>
+          <td>{{ paciente.fecha_registro }}</td>
+          <td>
+            <form method="post" action="{% url 'asignar_prioridad' paciente.id %}">
+              {% csrf_token %}
+              <select name="prioridad" class="form-select" required>
+                <option disabled selected>Selecciona prioridad</option>
+                <option value="nivel_1">🔴 Nivel 1: Muy alta</option>
+                <option value="nivel_2">🟠 Nivel 2: Alta</option>
+                <option value="nivel_3">🟡 Nivel 3: Media</option>
+                <option value="nivel_4">🟢 Nivel 4: Baja</option>
+                <option value="nivel_5">🔵 Nivel 5: Muy baja</option>
+              </select>
+              <button type="submit" class="btn btn-sm btn-primary mt-1">Asignar</button>
+            </form>
+          </td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="3" class="text-center">No hay pacientes en espera</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+function refrescarTabla() {
+  fetch("{% url 'lista_espera' %}")
+    .then(response => response.text())
+    .then(html => {
+      // Extraer el tbody del HTML recibido
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(html, "text/html");
+      const nuevoTbody = doc.querySelector("#tabla-espera-body");
+
+      if (nuevoTbody) {
+        document.querySelector("#tabla-espera-body").innerHTML = nuevoTbody.innerHTML;
+      }
+    })
+    .catch(error => console.error("Error refrescando tabla:", error));
+}
+
+// refrescar cada 3 segundos
+setInterval(refrescarTabla, 5000);
+</script>
+{% endblock %}

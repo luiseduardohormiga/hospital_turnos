@@ -1,4 +1,7 @@
-# pacientes/logic/lista_doble.py
+# implementacion de lista doblemente enlazada para gestionar turnos de pacientes
+# cada nodo tiene referencia al siguiente y al anterior
+# la lista se mantiene ordenada por prioridad del paciente
+
 class NodoTurno:
     def __init__(self, turno):
         self.turno = turno
