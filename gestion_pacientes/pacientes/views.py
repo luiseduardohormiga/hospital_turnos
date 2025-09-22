@@ -56,6 +56,7 @@ def pasar_turno(request):
 def atender_paciente(request, paciente_id):
     return redirect("lista_turnos")
 
+@login_required
 def lista_espera(request):
     pacientes = Paciente.objects.filter(prioridad="pendiente").order_by("fecha_registro")
     return render(request, "pacientes/lista_espera.html", {"pacientes": pacientes})

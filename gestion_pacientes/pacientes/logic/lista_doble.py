@@ -5,7 +5,7 @@
 class NodoTurno:
     def __init__(self, turno):
         self.turno = turno
-        self.siguiente = None #nodo que guarda el turno, siguiente y el anterior
+        self.siguiente = None #nodo que guarda el turno, fechas siguiente y el anterior
         self.anterior = None
 
 class ListaDobleTurnos:

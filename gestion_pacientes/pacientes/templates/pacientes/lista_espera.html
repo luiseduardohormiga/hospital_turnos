@@ -4,8 +4,8 @@
   <div class="card-body">
     <h2 class="card-title">Pacientes en espera</h2>
 
-    <table class="table table-bordered">
-      <thead>
+    <table class="table table-striped table-hover">
+      <thead class="table-dark">
         <tr>
           <th>Nombre</th>
           <th>Fecha Registro</th>
@@ -18,9 +18,9 @@
           <td>{{ paciente.nombre }}</td>
           <td>{{ paciente.fecha_registro }}</td>
           <td>
-            <form method="post" action="{% url 'asignar_prioridad' paciente.id %}">
+            <form method="post" action="{% url 'asignar_prioridad' paciente.id %}" class="d-flex align-items-center gap-2">
               {% csrf_token %}
-              <select name="prioridad" class="form-select" required>
+              <select name="prioridad" class="form-select form-select-sm" required>
                 <option disabled selected>Selecciona prioridad</option>
                 <option value="nivel_1">🔴 Nivel 1: Muy alta</option>
                 <option value="nivel_2">🟠 Nivel 2: Alta</option>
@@ -28,7 +28,7 @@
                 <option value="nivel_4">🟢 Nivel 4: Baja</option>
                 <option value="nivel_5">🔵 Nivel 5: Muy baja</option>
               </select>
-              <button type="submit" class="btn btn-sm btn-primary mt-1">Asignar</button>
+              <button type="submit" class="btn btn-sm btn-primary mt-2">Asignar</button>
             </form>
           </td>
         </tr>
